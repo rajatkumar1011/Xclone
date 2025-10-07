@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X Clone - Share Your Thoughts</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="logo">
+                    <i class="fa-brands fa-x-twitter"></i>
+                </div>
+                <nav class="nav-menu">
+                    <a href="#" class="nav-item active">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fas fa-search"></i>
+                        <span>Explore</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fas fa-bell"></i>
+                        <span>Notifications</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>Messages</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Bookmarks</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fas fa-user"></i>
+                        <span>Profile</span>
+                    </a>
+                </nav>
+                <button class="post-btn">Post</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="header">
+                <h1>Home</h1>
+            </header>
+
+            <!-- Post Creation -->
+            <div class="create-post">
+                <div class="avatar">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <div class="post-input-area">
+                    <textarea id="postInput" placeholder="What's happening?!" rows="3"></textarea>
+                    <div class="post-actions">
+                        <div class="post-icons">
+                            <button class="icon-btn" title="Media">
+                                <i class="fas fa-image"></i>
+                            </button>
+                            <button class="icon-btn" title="GIF">
+                                <i class="fas fa-file-image"></i>
+                            </button>
+                            <button class="icon-btn" title="Poll">
+                                <i class="fas fa-chart-bar"></i>
+                            </button>
+                            <button class="icon-btn" title="Emoji">
+                                <i class="fas fa-smile"></i>
+                            </button>
+                        </div>
+                        <button id="submitPost" class="submit-post-btn">Post</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Posts Feed -->
+            <div id="postsFeed" class="posts-feed">
+                <!-- Sample posts will be added here by JavaScript -->
+            </div>
+        </main>
+
+        <!-- Right Sidebar -->
+        <aside class="right-sidebar">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search">
+            </div>
+
+            <div class="widget">
+                <h2>What's happening</h2>
+                <div class="trending-item">
+                    <div class="trending-category">Technology · Trending</div>
+                    <div class="trending-topic">#WebDevelopment</div>
+                    <div class="trending-posts">12.5K posts</div>
+                </div>
+                <div class="trending-item">
+                    <div class="trending-category">Sports · Trending</div>
+                    <div class="trending-topic">#WorldCup</div>
+                    <div class="trending-posts">45.2K posts</div>
+                </div>
+                <div class="trending-item">
+                    <div class="trending-category">Entertainment · Trending</div>
+                    <div class="trending-topic">#Movies</div>
+                    <div class="trending-posts">8.7K posts</div>
+                </div>
+            </div>
+
+            <div class="widget">
+                <h2>Who to follow</h2>
+                <div class="follow-item">
+                    <div class="follow-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="follow-info">
+                        <div class="follow-name">Tech Enthusiast</div>
+                        <div class="follow-username">@techenthusiast</div>
+                    </div>
+                    <button class="follow-btn">Follow</button>
+                </div>
+                <div class="follow-item">
+                    <div class="follow-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="follow-info">
+                        <div class="follow-name">Design Guru</div>
+                        <div class="follow-username">@designguru</div>
+                    </div>
+                    <button class="follow-btn">Follow</button>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
