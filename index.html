@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home / X Clone</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configure Tailwind to use Inter font and Dark Mode -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'x-blue': '#1D9BF0',
+                        'x-text-light': '#D9D9D9',
+                        'x-text-dark': '#71767B',
+                        'x-bg': '#000000',
+                        'x-bg-light': '#16181C',
+                        'x-line': '#2F3336',
+                        'x-hover': 'rgba(29, 155, 240, 0.1)'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar styling for the dark theme */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2F3336;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        /* Style for the main feed container to prevent overflow on mobile */
+        .feed-container {
+            min-height: 100vh;
+        }
+        /* Style for the active tab indicator */
+        .active-tab {
+            position: relative;
+            font-weight: bold;
+        }
+        .active-tab::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 4px;
+            width: 56px; /* w-14 */
+            background-color: #1D9BF0; /* x-blue */
+            border-radius: 9999px; /* rounded-full */
+        }
+    </style>
+</head>
+
+<body class="bg-x-bg text-white font-sans min-h-screen">
+
+    <!-- Utility SVG Icons (Font Awesome/Lucide placeholders) -->
+    <svg id="x-logo" class="hidden" viewBox="0 0 24 24" fill="currentColor"><g><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.814L4.99 21.75H1.68l7.23-8.26L1.24 2.25h3.308l5.215 6.814 5.75-6.814z"></path></g></svg>
+    <svg id="home-icon" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <svg id="explore-icon" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <svg id="bell-icon" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    <svg id="message-icon" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 15-2-4-4-2-15-7z"/><path d="M11 11 15 15"/></svg>
+    <svg id="profile-icon" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <svg id="more-icon" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+    <svg id="photo-icon" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+    <svg id="plus-icon" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+    <svg id="comment-icon" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <svg id="repost-icon" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 5 4 4-4 4"/><path d="M13 19H7A4 4 0 0 1 7 11h12"/></svg>
+    <svg id="like-icon" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A4.5 4.5 0 0 0 15.5 5c-1.57 0-3.15.68-4.17 2.38A4.5 4.5 0 0 0 8 5C5.5 5 4 6.5 4 9.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg>
+
+    <!-- MAIN GRID CONTAINER -->
+    <div class="max-w-7xl mx-auto flex feed-container">
+
+        <!-- 1. LEFT NAVIGATION BAR (Desktop Only) -->
+        <nav class="hidden lg:block w-[275px] xl:w-[275px] sticky top-0 h-screen p-2 xl:px-4">
+            <div class="flex flex-col h-full">
+                <!-- X Logo Button -->
+                <a href="#" class="p-3 my-1 w-fit rounded-full hover:bg-x-bg-light transition duration-200">
+                    <svg viewBox="0 0 24 24" class="h-7 w-7 text-white"><use href="#x-logo"></use></svg>
+                </a>
+                
+                <!-- X Clone text added here -->
+                <div class="pl-3 pb-4 pt-1">
+                    <span class="text-xl font-extrabold text-x-blue">X Clone</span>
+                </div>
+                
+                <!-- Navigation Links -->
+                <div class="space-y-1">
+                    <a href="#" class="nav-item group flex items-center px-3 py-3 rounded-full hover:bg-x-bg-light transition duration-200">
+                        <svg class="h-7 w-7 mr-4" fill="white" viewBox="0 0 24 24"><use href="#home-icon"></use></svg>
+                        <span class="text-xl font-bold">Home</span>
+                    </a>
+                    <a href="#" class="nav-item group flex items-center px-3 py-3 rounded-full hover:bg-x-bg-light transition duration-200">
+                        <svg class="h-7 w-7 mr-4" viewBox="0 0 24 24"><use href="#explore-icon"></use></svg>
+                        <span class="text-xl">Explore</span>
+                    </a>
+                    <a href="#" class="nav-item group flex items-center px-3 py-3 rounded-full hover:bg-x-bg-light transition duration-200">
+                        <svg class="h-7 w-7 mr-4" viewBox="0 0 24 24"><use href="#bell-icon"></use></svg>
+                        <span class="text-xl">Notifications</span>
+                    </a>
+                    <a href="#" class="nav-item group flex items-center px-3 py-3 rounded-full hover:bg-x-bg-light transition duration-200">
+                        <svg class="h-7 w-7 mr-4" viewBox="0 0 24 24"><use href="#message-icon"></use></svg>
+                        <span class="text-xl">Messages</span>
+                    </a>
+                    <a href="#" class="nav-item group flex items-center px-3 py-3 rounded-full hover:bg-x-bg-light transition duration-200">
+                        <svg class="h-7 w-7 mr-4" viewBox="0 0 24 24"><use href="#profile-icon"></use></svg>
+                        <span class="text-xl">Profile</span>
+                    </a>
+                    <a href="#" class="nav-item group flex items-center px-3 py-3 rounded-full hover:bg-x-bg-light transition duration-200">
+                        <svg class="h-7 w-7 mr-4" viewBox="0 0 24 24"><use href="#more-icon"></use></svg>
+                        <span class="text-xl">More</span>
+                    </a>
+                </div>
+
+                <!-- Post Button (Desktop) -->
+                <button class="mt-4 w-full py-3 bg-x-blue text-white font-bold rounded-full hover:opacity-90 transition duration-200">
+                    Post
+                </button>
+            </div>
+        </nav>
+
+        <!-- 2. CENTRAL FEED / TIMELINE -->
+        <main class="w-full lg:w-[600px] xl:w-[600px] min-h-screen border-x border-x-line">
+            
+            <!-- Fixed Header with Tabs -->
+            <header class="sticky top-0 bg-x-bg/80 backdrop-blur-md z-10 border-b border-x-line">
+                <h1 class="text-xl font-bold p-3">Home</h1>
+                
+                <!-- Feed Tabs: For You & Following -->
+                <div class="flex h-12 text-x-text-light text-base">
+                    <div class="flex-1 flex justify-center items-center cursor-pointer hover:bg-x-line/10 transition duration-150 active-tab">
+                        <span class="text-white font-bold">For you</span>
+                    </div>
+                    <div class="flex-1 flex justify-center items-center cursor-pointer hover:bg-x-line/10 transition duration-150">
+                        <span>Following</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Post Compose Section -->
+            <div class="p-4 border-b border-x-line flex">
+                <div class="flex-shrink-0">
+                    <div class="w-10 h-10 bg-x-blue rounded-full"></div> <!-- Avatar Placeholder -->
+                </div>
+                <div class="ml-3 flex-grow">
+                    <textarea 
+                        placeholder="What is happening?!" 
+                        class="w-full bg-transparent text-xl focus:outline-none resize-none placeholder-x-text-dark pt-2"
+                        rows="2"
+                    ></textarea>
+                    <div class="flex justify-between items-center pt-3 mt-2 border-t border-x-line">
+                        <div class="flex space-x-4 text-x-blue">
+                            <button class="hover:text-x-text-light transition duration-150 p-1 rounded-full hover:bg-x-hover">
+                                <svg class="w-5 h-5" viewBox="0 0 24 24"><use href="#photo-icon"></use></svg>
+                            </button>
+                            <button class="hover:text-x-text-light transition duration-150 p-1 rounded-full hover:bg-x-hover">
+                                <svg class="w-5 h-5" viewBox="0 0 24 24"><use href="#more-icon"></use></svg>
+                            </button>
+                        </div>
+                        <button class="px-4 py-1.5 bg-x-blue text-white font-bold rounded-full text-sm opacity-50 cursor-not-allowed">
+                            Post
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mock Post Component Macro -->
+            <div id="post-list">
+                <!-- POST 1 (Interactive Example) -->
+                <div class="p-4 border-b border-x-line hover:bg-x-bg-light transition duration-150 flex post">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-green-500 rounded-full"></div>
+                    </div>
+                    <div class="ml-3 flex-grow">
+                        <div class="flex items-center space-x-1">
+                            <span class="font-bold hover:underline cursor-pointer">Space Traveler</span>
+                            <span class="text-x-text-dark">@SpaceXplorer · 2h</span>
+                        </div>
+                        <p class="text-x-text-light mt-1">
+                            Just witnessed the most incredible aurora display from the ISS. The Earth is truly a masterpiece. We need to protect this beautiful pale blue dot! #Space #AuroraBorealis
+                        </p>
+                        <!-- Interaction Bar -->
+                        <div class="flex justify-between mt-3 text-x-text-dark text-sm w-full max-w-sm">
+                            <!-- Comments -->
+                            <button class="flex items-center space-x-2 p-1 rounded-full hover:text-x-blue hover:bg-x-hover transition duration-150 interaction-btn" data-action="comment">
+                                <svg class="w-5 h-5 stroke-current" viewBox="0 0 24 24"><use href="#comment-icon"></use></svg>
+                                <span>1.2K</span>
+                            </button>
+                            <!-- Repost -->
+                            <button class="flex items-center space-x-2 p-1 rounded-full hover:text-green-500 hover:bg-x-hover transition duration-150 interaction-btn" data-action="repost" data-count="5800" data-active="false">
+                                <svg class="w-5 h-5 stroke-current" viewBox="0 0 24 24"><use href="#repost-icon"></use></svg>
+                                <span>5.8K Reposts</span>
+                            </button>
+                            <!-- Like -->
+                            <button class="flex items-center space-x-2 p-1 rounded-full hover:text-red-500 hover:bg-x-hover transition duration-150 interaction-btn" data-action="like" data-count="15000" data-active="false">
+                                <svg class="w-5 h-5 stroke-current" viewBox="0 0 24 24"><use href="#like-icon"></use></svg>
+                                <span>15K Likes</span>
+                            </button>
+                            <!-- Share -->
+                            <button class="flex items-center space-x-2 p-1 rounded-full hover:text-x-blue hover:bg-x-hover transition duration-150">
+                                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- POST 2 (Code Whisperer) -->
+                <div class="p-4 border-b border-x-line hover:bg-x-bg-light transition duration-150 flex post">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-purple-500 rounded-full"></div>
+                    </div>
+                    <div class="ml-3 flex-grow">
+                        <div class="flex items-center space-x-1">
+                            <span class="font-bold hover:underline cursor-pointer">Code Whisperer</span>
+                            <span class="text-x-text-dark">@TailwindNinja · 4h</span>
+                        </div>
+                        <p class="text-x-text-light mt-1">
+                            Tailwind CSS is seriously cheating. Went from zero to sleek UI in under an hour. Utility-first architecture is the future of front-end development. 🚀 #webdev #frontend
+                        </p>
+                        <div class="flex justify-between mt-3 text-x-text-dark text-sm w-full max-w-sm">
+                             <!-- Interaction Bar -->
+                            <button class="flex items-center space-x-2 p-1 rounded-full hover:text-x-blue hover:bg-x-hover transition duration-150 interaction-btn" data-action="comment">
+                                <svg class="w-5 h-5 stroke-current" viewBox="0 0 24 24"><use href="#comment-icon"></use></svg>
+                                <span>450</span>
+                            </button>
+                            <button class="flex items-center space-x-2 p-1 rounded-full hover:text-green-500 hover:bg-x-hover transition duration-150 interaction-btn" data-action="repost" data-count="2100" data-active="false">
+                                <svg class="w-5 h-5 stroke-current" viewBox="0 0 24 24"><use href="#repost-icon"></use></svg>
+                                <span>2.1K Reposts</span>
+                            </button>
+                            <button class="flex items-center space-x-2 p-1 rounded-full hover:text-red-500 hover:bg-x-hover transition duration-150 interaction-btn" data-action="like" data-count="7500" data-active="false">
+                                <svg class="w-5 h-5 stroke-current" viewBox="0 0 24 24"><use href="#like-icon"></use></svg>
+                                <span>7.5K Likes</span>
+                            </button>
+                            <button class="flex items-center space-x-2 p-1 rounded-full hover:text-x-blue hover:bg-x-hover transition duration-150">
+                                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- POST 3 (AI Analyst) -->
+                <div class="p-4 border-b border-x-line hover:bg-x-bg-light transition duration-150 flex post">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-yellow-500 rounded-full"></div>
+                    </div>
+                    <div class="ml-3 flex-grow">
+                        <div class="flex items-center space-x-1">
+                            <span class="font-bold hover:underline cursor-pointer">AI Analyst</span>
+                            <span class="text-x-text-dark">@GenAI_Trends · 6h</span>
+                        </div>
+                        <p class="text-x-text-light mt-1">
+                            The recent advancements in LLM context windows are game-changing. Expect personalized, real-time creative assistance to become standard across all major platforms by year's end.
+                        </p>
+                        <div class="flex justify-between mt-3 text-x-text-dark text-sm w-full max-w-sm">
+                            <button class="flex items-center space-x-2 p-1 rounded-full hover:text-x-blue hover:bg-x-hover transition duration-150 interaction-btn" data-action="comment">
+                                <svg class="w-5 h-5 stroke-current" viewBox="0 0 24 24"><use href="#comment-icon"></use></svg>
+                                <span>900</span>
+                            </button>
+                            <button class="flex items-center space-x-2 p-1 rounded-full hover:text-green-500 hover:bg-x-hover transition duration-150 interaction-btn" data-action="repost" data-count="4500" data-active="false">
+                                <svg class="w-5 h-5 stroke-current" viewBox="0 0 24 24"><use href="#repost-icon"></use></svg>
+                                <span>4.5K Reposts</span>
+                            </button>
+                            <button class="flex items-center space-x-2 p-1 rounded-full hover:text-red-500 hover:bg-x-hover transition duration-150 interaction-btn" data-action="like" data-count="11000" data-active="false">
+                                <svg class="w-5 h-5 stroke-current" viewBox="0 0 24 24"><use href="#like-icon"></use></svg>
+                                <span>11K Likes</span>
+                            </button>
+                            <button class="flex items-center space-x-2 p-1 rounded-full hover:text-x-blue hover:bg-x-hover transition duration-150">
+                                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- POST 4 (Deeper Content) -->
+                <div class="p-4 border-b border-x-line hover:bg-x-bg-light transition duration-150 flex post">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-pink-500 rounded-full"></div>
+                    </div>
+                    <div class="ml-3 flex-grow">
+                        <div class="flex items-center space-x-1">
+                            <span class="font-bold hover:underline cursor-pointer">Urban Explorer</span>
+                            <span class="text-x-text-dark">@CityLights · 8h</span>
+                        </div>
+                        <p class="text-x-text-light mt-1">
+                            Found the best hidden coffee shop today! Small, quiet, and they brew their own beans. Productivity levels are now off the charts. ☕ #HiddenGems #CoffeeLover
+                        </p>
+                        <div class="flex justify-between mt-3 text-x-text-dark text-sm w-full max-w-sm">
+                            <button class="flex items-center space-x-2 p-1 rounded-full hover:text-x-blue hover:bg-x-hover transition duration-150 interaction-btn" data-action="comment">
+                                <svg class="w-5 h-5 stroke-current" viewBox="0 0 24 24"><use href="#comment-icon"></use></svg>
+                                <span>78</span>
+                            </button>
+                            <button class="flex items-center space-x-2 p-1 rounded-full hover:text-green-500 hover:bg-x-hover transition duration-150 interaction-btn" data-action="repost" data-count="120" data-active="false">
+                                <svg class="w-5 h-5 stroke-current" viewBox="0 0 24 24"><use href="#repost-icon"></use></svg>
+                                <span>120 Reposts</span>
+                            </button>
+                            <button class="flex items-center space-x-2 p-1 rounded-full hover:text-red-500 hover:bg-x-hover transition duration-150 interaction-btn" data-action="like" data-count="980" data-active="false">
+                                <svg class="w-5 h-5 stroke-current" viewBox="0 0 24 24"><use href="#like-icon"></use></svg>
+                                <span>980 Likes</span>
+                            </button>
+                            <button class="flex items-center space-x-2 p-1 rounded-full hover:text-x-blue hover:bg-x-hover transition duration-150">
+                                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                 <!-- POST 5 (Gaming) -->
+                <div class="p-4 border-b border-x-line hover:bg-x-bg-light transition duration-150 flex post">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-gray-500 rounded-full"></div>
+                    </div>
+                    <div class="ml-3 flex-grow">
+                        <div class="flex items-center space-x-1">
+                            <span class="font-bold hover:underline cursor-pointer">Pixel Master</span>
+                            <span class="text-x-text-dark">@RetroGamer · 10h</span>
+                        </div>
+                        <p class="text-x-text-light mt-1">
+                            Finally beat the hardest level in that classic platformer! The feeling of accomplishment is unmatched. Who remembers those 16-bit days? #Gaming #Retro
+                        </p>
+                        <div class="flex justify-between mt-3 text-x-text-dark text-sm w-full max-w-sm">
+                            <button class="flex items-center space-x-2 p-1 rounded-full hover:text-x-blue hover:bg-x-hover transition duration-150 interaction-btn" data-action="comment">
+                                <svg class="w-5 h-5 stroke-current" viewBox="0 0 24 24"><use href="#comment-icon"></use></svg>
+                                <span>3.4K</span>
+                            </button>
+                            <button class="flex items-center space-x-2 p-1 rounded-full hover:text-green-500 hover:bg-x-hover transition duration-150 interaction-btn" data-action="repost" data-count="1500" data-active="false">
+                                <svg class="w-5 h-5 stroke-current" viewBox="0 0 24 24"><use href="#repost-icon"></use></svg>
+                                <span>1.5K Reposts</span>
+                            </button>
+                            <button class="flex items-center space-x-2 p-1 rounded-full hover:text-red-500 hover:bg-x-hover transition duration-150 interaction-btn" data-action="like" data-count="22000" data-active="false">
+                                <svg class="w-5 h-5 stroke-current" viewBox="0 0 24 24"><use href="#like-icon"></use></svg>
+                                <span>22K Likes</span>
+                            </button>
+                            <button class="flex items-center space-x-2 p-1 rounded-full hover:text-x-blue hover:bg-x-hover transition duration-150">
+                                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- POST 6 (Science) -->
+                <div class="p-4 border-b border-x-line hover:bg-x-bg-light transition duration-150 flex post">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-indigo-500 rounded-full"></div>
+                    </div>
+                    <div class="ml-3 flex-grow">
+                        <div class="flex items-center space-x-1">
+                            <span class="font-bold hover:underline cursor-pointer">Astro Physics Now</span>
+                            <span class="text-x-text-dark">@DeepSpaceObserver · 12h</span>
+                        </div>
+                        <p class="text-x-text-light mt-1">
+                            New data suggests the existence of a planet entirely composed of diamonds. The universe continues to amaze and humble us. 💎🪐 #Astronomy #Science
+                        </p>
+                        <div class="flex justify-between mt-3 text-x-text-dark text-sm w-full max-w-sm">
+                            <button class="flex items-center space-x-2 p-1 rounded-full hover:text-x-blue hover:bg-x-hover transition duration-150 interaction-btn" data-action="comment">
+                                <svg class="w-5 h-5 stroke-current" viewBox="0 0 24 24"><use href="#comment-icon"></use></svg>
+                                <span>880</span>
+                            </button>
+                            <button class="flex items-center space-x-2 p-1 rounded-full hover:text-green-500 hover:bg-x-hover transition duration-150 interaction-btn" data-action="repost" data-count="3100" data-active="false">
+                                <svg class="w-5 h-5 stroke-current" viewBox="0 0 24 24"><use href="#repost-icon"></use></svg>
+                                <span>3.1K Reposts</span>
+                            </button>
+                            <button class="flex items-center space-x-2 p-1 rounded-full hover:text-red-500 hover:bg-x-hover transition duration-150 interaction-btn" data-action="like" data-count="19000" data-active="false">
+                                <svg class="w-5 h-5 stroke-current" viewBox="0 0 24 24"><use href="#like-icon"></use></svg>
+                                <span>19K Likes</span>
+                            </button>
+                            <button class="flex items-center space-x-2 p-1 rounded-full hover:text-x-blue hover:bg-x-hover transition duration-150">
+                                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- POST 7 (Finance) -->
+                <div class="p-4 border-b border-x-line hover:bg-x-bg-light transition duration-150 flex post">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-amber-500 rounded-full"></div>
+                    </div>
+                    <div class="ml-3 flex-grow">
+                        <div class="flex items-center space-x-1">
+                            <span class="font-bold hover:underline cursor-pointer">Wall St Watcher</span>
+                            <span class="text-x-text-dark">@StockNerd · 14h</span>
+                        </div>
+                        <p class="text-x-text-light mt-1">
+                            The Q3 earnings reports are showing unexpected strength in the renewable energy sector. Time to rebalance those portfolios! 📈 #Finance #Investing
+                        </p>
+                        <div class="flex justify-between mt-3 text-x-text-dark text-sm w-full max-w-sm">
+                            <button class="flex items-center space-x-2 p-1 rounded-full hover:text-x-blue hover:bg-x-hover transition duration-150 interaction-btn" data-action="comment">
+                                <svg class="w-5 h-5 stroke-current" viewBox="0 0 24 24"><use href="#comment-icon"></use></svg>
+                                <span>1.9K</span>
+                            </button>
+                            <button class="flex items-center space-x-2 p-1 rounded-full hover:text-green-500 hover:bg-x-hover transition duration-150 interaction-btn" data-action="repost" data-count="700" data-active="false">
+                                <svg class="w-5 h-5 stroke-current" viewBox="0 0 24 24"><use href="#repost-icon"></use></svg>
+                                <span>700 Reposts</span>
+                            </button>
+                            <button class="flex items-center space-x-2 p-1 rounded-full hover:text-red-500 hover:bg-x-hover transition duration-150 interaction-btn" data-action="like" data-count="4500" data-active="false">
+                                <svg class="w-5 h-5 stroke-current" viewBox="0 0 24 24"><use href="#like-icon"></use></svg>
+                                <span>4.5K Likes</span>
+                            </button>
+                            <button class="flex items-center space-x-2 p-1 rounded-full hover:text-x-blue hover:bg-x-hover transition duration-150">
+                                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- POST 8 (Food) -->
+                <div class="p-4 border-b border-x-line hover:bg-x-bg-light transition duration-150 flex post">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-lime-500 rounded-full"></div>
+                    </div>
+                    <div class="ml-3 flex-grow">
+                        <div class="flex items-center space-x-1">
+                            <span class="font-bold hover:underline cursor-pointer">Chef Daily</span>
+                            <span class="text-x-text-dark">@GourmetLife · 16h</span>
+                        </div>
+                        <p class="text-x-text-light mt-1">
+                            Tried making authentic Neapolitan pizza for the first time. The crust challenge is real! But totally worth the effort. Next up: sourdough. 🍕 #Cooking #Foodie
+                        </p>
+                        <div class="flex justify-between mt-3 text-x-text-dark text-sm w-full max-w-sm">
+                            <button class="flex items-center space-x-2 p-1 rounded-full hover:text-x-blue hover:bg-x-hover transition duration-150 interaction-btn" data-action="comment">
+                                <svg class="w-5 h-5 stroke-current" viewBox="0 0 24 24"><use href="#comment-icon"></use></svg>
+                                <span>520</span>
+                            </button>
+                            <button class="flex items-center space-x-2 p-1 rounded-full hover:text-green-500 hover:bg-x-hover transition duration-150 interaction-btn" data-action="repost" data-count="300" data-active="false">
+                                <svg class="w-5 h-5 stroke-current" viewBox="0 0 24 24"><use href="#repost-icon"></use></svg>
+                                <span>300 Reposts</span>
+                            </button>
+                            <button class="flex items-center space-x-2 p-1 rounded-full hover:text-red-500 hover:bg-x-hover transition duration-150 interaction-btn" data-action="like" data-count="6200" data-active="false">
+                                <svg class="w-5 h-5 stroke-current" viewBox="0 0 24 24"><use href="#like-icon"></use></svg>
+                                <span>6.2K Likes</span>
+                            </button>
+                            <button class="flex items-center space-x-2 p-1 rounded-full hover:text-x-blue hover:bg-x-hover transition duration-150">
+                                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                 <!-- POST 9 (Travel) -->
+                <div class="p-4 border-b border-x-line hover:bg-x-bg-light transition duration-150 flex post">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-orange-500 rounded-full"></div>
+                    </div>
+                    <div class="ml-3 flex-grow">
+                        <div class="flex items-center space-x-1">
+                            <span class="font-bold hover:underline cursor-pointer">Wanderluster</span>
+                            <span class="text-x-text-dark">@Globetrotter · 18h</span>
+                        </div>
+                        <p class="text-x-text-light mt-1">
+                            Hiking season is officially open! There is nothing like mountain air to clear the mind. Planning my next trip to the Dolomites. Any recommendations? ⛰️ #Travel #Hiking
+                        </p>
+                        <div class="flex justify-between mt-3 text-x-text-dark text-sm w-full max-w-sm">
+                            <button class="flex items-center space-x-2 p-1 rounded-full hover:text-x-blue hover:bg-x-hover transition duration-150 interaction-btn" data-action="comment">
+                                <svg class="w-5 h-5 stroke-current" viewBox="0 0 24 24"><use href="#comment-icon"></use></svg>
+                                <span>2.1K</span>
+                            </button>
+                            <button class="flex items-center space-x-2 p-1 rounded-full hover:text-green-500 hover:bg-x-hover transition duration-150 interaction-btn" data-action="repost" data-count="1100" data-active="false">
+                                <svg class="w-5 h-5 stroke-current" viewBox="0 0 24 24"><use href="#repost-icon"></use></svg>
+                                <span>1.1K Reposts</span>
+                            </button>
+                            <button class="flex items-center space-x-2 p-1 rounded-full hover:text-red-500 hover:bg-x-hover transition duration-150 interaction-btn" data-action="like" data-count="17000" data-active="false">
+                                <svg class="w-5 h-5 stroke-current" viewBox="0 0 24 24"><use href="#like-icon"></use></svg>
+                                <span>17K Likes</span>
+                            </button>
+                            <button class="flex items-center space-x-2 p-1 rounded-full hover:text-x-blue hover:bg-x-hover transition duration-150">
+                                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- POST 10 (Last Post) -->
+                <div class="p-4 border-b border-x-line hover:bg-x-bg-light transition duration-150 flex post">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-fuchsia-500 rounded-full"></div>
+                    </div>
+                    <div class="ml-3 flex-grow">
+                        <div class="flex items-center space-x-1">
+                            <span class="font-bold hover:underline cursor-pointer">Future Thinker</span>
+                            <span class="text-x-text-dark">@InnovationHub · 20h</span>
+                        </div>
+                        <p class="text-x-text-light mt-1">
+                            Excited for the next generation of renewable power sources. Fusion energy commercialization feels closer than ever! The decade of energy breakthroughs is upon us. #Future
+                        </p>
+                        <div class="flex justify-between mt-3 text-x-text-dark text-sm w-full max-w-sm">
+                            <button class="flex items-center space-x-2 p-1 rounded-full hover:text-x-blue hover:bg-x-hover transition duration-150 interaction-btn" data-action="comment">
+                                <svg class="w-5 h-5 stroke-current" viewBox="0 0 24 24"><use href="#comment-icon"></use></svg>
+                                <span>4.2K</span>
+                            </button>
+                            <button class="flex items-center space-x-2 p-1 rounded-full hover:text-green-500 hover:bg-x-hover transition duration-150 interaction-btn" data-action="repost" data-count="8.8K" data-active="false">
+                                <svg class="w-5 h-5 stroke-current" viewBox="0 0 24 24"><use href="#repost-icon"></use></svg>
+                                <span>8.8K Reposts</span>
+                            </button>
+                            <button class="flex items-center space-x-2 p-1 rounded-full hover:text-red-500 hover:bg-x-hover transition duration-150 interaction-btn" data-action="like" data-count="35K" data-active="false">
+                                <svg class="w-5 h-5 stroke-current" viewBox="0 0 24 24"><use href="#like-icon"></use></svg>
+                                <span>35K Likes</span>
+                            </button>
+                            <button class="flex items-center space-x-2 p-1 rounded-full hover:text-x-blue hover:bg-x-hover transition duration-150">
+                                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- End of Post List -->
+
+        </main>
+
+        <!-- 3. RIGHT TRENDS & WHO TO FOLLOW (Desktop Only) -->
+        <aside class="hidden lg:block w-[350px] sticky top-0 h-screen p-4">
+            
+            <div class="space-y-4">
+                
+                <!-- Search Bar -->
+                <div class="relative">
+                    <input 
+                        type="text" 
+                        placeholder="Search X" 
+                        class="w-full py-2 pl-10 pr-4 bg-x-bg-light rounded-full text-white placeholder-x-text-dark focus:outline-none focus:ring-1 focus:ring-x-blue"
+                    >
+                    <!-- Search Icon (Magnifying glass inline SVG) -->
+                    <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-x-text-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                </div>
+                
+                <!-- Trends for You Box -->
+                <div class="bg-x-bg-light rounded-2xl p-4">
+                    <h3 class="text-xl font-extrabold mb-4">Trends for you</h3>
+                    <div class="space-y-3">
+                        
+                        <!-- Trend Item 1 -->
+                        <a href="#" class="block hover:bg-x-line/20 p-2 -mx-2 rounded-lg transition duration-150">
+                            <div class="text-x-text-dark text-sm">Trending in Tech</div>
+                            <div class="font-bold text-x-text-light">#GenerativeAI</div>
+                            <div class="text-x-text-dark text-sm">45.2K posts</div>
+                        </a>
+                        
+                        <!-- Trend Item 2 -->
+                        <a href="#" class="block hover:bg-x-line/20 p-2 -mx-2 rounded-lg transition duration-150">
+                            <div class="text-x-text-dark text-sm">Sports · Trending</div>
+                            <div class="font-bold text-x-text-light">#ChampionshipRun</div>
+                            <div class="text-x-text-dark text-sm">118K posts</div>
+                        </a>
+                        
+                        <!-- Trend Item 3 -->
+                        <a href="#" class="block hover:bg-x-line/20 p-2 -mx-2 rounded-lg transition duration-150">
+                            <div class="text-x-text-dark text-sm">Politics · Trending</div>
+                            <div class="font-bold text-x-text-light">Infrastructure Bill Debate</div>
+                            <div class="text-x-text-dark text-sm">78.9K posts</div>
+                        </a>
+                    </div>
+                    <button class="text-x-blue mt-4 hover:underline">Show more</button>
+                </div>
+
+                <!-- Who to Follow Box -->
+                <div class="bg-x-bg-light rounded-2xl p-4">
+                    <h3 class="text-xl font-extrabold mb-4">Who to follow</h3>
+                    <div class="space-y-4">
+                        
+                        <!-- Follow Suggestion 1 -->
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-red-500 rounded-full mr-3"></div>
+                                <div>
+                                    <div class="font-bold hover:underline cursor-pointer">UI/UX Guru</div>
+                                    <div class="text-x-text-dark text-sm">@DesignFocus</div>
+                                </div>
+                            </div>
+                            <button class="px-4 py-1.5 bg-white text-black font-bold rounded-full text-sm hover:bg-gray-200 transition duration-150">
+                                Follow
+                            </button>
+                        </div>
+                        
+                        <!-- Follow Suggestion 2 -->
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-blue-700 rounded-full mr-3"></div>
+                                <div>
+                                    <div class="font-bold hover:underline cursor-pointer">Data Scientist</div>
+                                    <div class="text-x-text-dark text-sm">@DeepLearningFan</div>
+                                </div>
+                            </div>
+                            <button class="px-4 py-1.5 bg-white text-black font-bold rounded-full text-sm hover:bg-gray-200 transition duration-150">
+                                Follow
+                            </button>
+                        </div>
+                    </div>
+                    <button class="text-x-blue mt-4 hover:underline">Show more</button>
+                </div>
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- MOBILE FAB (Floating Action Button) for Posting -->
+    <button id="mobile-post-fab" class="lg:hidden fixed bottom-16 right-4 w-14 h-14 bg-x-blue text-white rounded-full flex items-center justify-center shadow-lg hover:opacity-90 transition duration-200 z-30">
+        <svg class="h-6 w-6 stroke-current" viewBox="0 0 24 24"><use href="#plus-icon"></use></svg>
+    </button>
+
+    <!-- MOBILE BOTTOM NAVIGATION (Fixed) -->
+    <nav class="lg:hidden fixed bottom-0 left-0 right-0 bg-x-bg border-t border-x-line flex justify-around py-2 z-20">
+        <a href="#" class="p-2 text-x-blue"><svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><use href="#home-icon"></use></svg></a>
+        <a href="#" class="p-2 text-x-text-dark"><svg class="h-6 w-6" viewBox="0 0 24 24"><use href="#explore-icon"></use></svg></a>
+        <a href="#" class="p-2 text-x-text-dark"><svg class="h-6 w-6" viewBox="0 0 24 24"><use href="#bell-icon"></use></svg></a>
+        <a href="#" class="p-2 text-x-text-dark"><svg class="h-6 w-6" viewBox="0 0 24 24"><use href="#message-icon"></use></svg></a>
+    </nav>
+    
+    <script>
+        /**
+         * Toggles the active state, color, and count of a post interaction button.
+         * @param {HTMLElement} element The button element.
+         * @param {string} action The type of interaction ('like' or 'repost').
+         */
+        function toggleInteraction(element, action) {
+            // Find the span containing the count text
+            const span = element.querySelector('span');
+            // Get the current count, handling K/M suffixes is complex, so we'll use a data-count attribute for simplicity
+            let countStr = element.dataset.count; 
+            let count = parseInt(countStr, 10);
+            let isActive = element.dataset.active === 'true';
+            const icon = element.querySelector('svg');
+            
+            // Determine active colors based on action
+            const activeColor = action === 'like' ? 'text-red-500' : 'text-green-500';
+            const hoverColor = action === 'like' ? 'hover:text-red-500' : 'hover:text-green-500';
+
+            if (isActive) {
+                // Deactivate
+                count--;
+                element.dataset.active = 'false';
+                element.classList.remove(activeColor);
+                element.classList.add(hoverColor); // Restore hover color
+                icon.classList.remove('fill-current');
+                icon.classList.add('stroke-current');
+            } else {
+                // Activate
+                count++;
+                element.dataset.active = 'true';
+                element.classList.add(activeColor);
+                element.classList.remove(hoverColor); // Remove hover effect on activation
+                icon.classList.add('fill-current');
+                icon.classList.remove('stroke-current');
+            }
+            
+            // Update the stored count and displayed text
+            element.dataset.count = count;
+            // Simple display update: if count is large, keep the 'K' format for visual realism
+            let displayCount = count;
+            if (count >= 1000) {
+                displayCount = (count / 1000).toFixed(1).replace('.0', '') + 'K';
+            }
+            
+            const actionText = action === 'like' ? 'Likes' : 'Reposts';
+            span.textContent = `${displayCount} ${actionText}`;
+
+            // Comment buttons just have hover effects and don't track state for this demo
+            if(action === 'comment'){
+                // Just toggle the color to blue for the mock interaction
+                element.classList.toggle('text-x-blue');
+            }
+        }
+
+        window.onload = () => {
+            // Find all interaction buttons and attach the listener
+            document.querySelectorAll('.interaction-btn').forEach(button => {
+                // Determine the correct action type from the dataset
+                const action = button.dataset.action; 
+                if (action && action !== 'comment') {
+                     // Check if it's a like/repost button (needs state tracking)
+                    // We only want to track like/repost state. Comments are just for style change.
+                    button.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        toggleInteraction(button, action);
+                    });
+                } else if (action === 'comment') {
+                    // Simple click for comments to toggle color (no counter logic needed for mock)
+                     button.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        button.classList.toggle('text-x-blue');
+                    });
+                }
+            });
+        };
+    </script>
+</body>
+</html>
